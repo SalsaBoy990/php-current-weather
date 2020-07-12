@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather app</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="content">
+      <div class="info">
+        <h2>Aktuális időjárás</h2>
+        <form method="post">
+          <label for="city">Add meg a város nevét!</label><br />
+          <input type="text" name="city" />
+          <button id="weather-btn" type="submit" value="Submit">Mehet</button>
+        </form>
+
+        <div id="weather-data">
+
+        </div>
+        <div class="error-box">
+
+        </div>
+
+
+      </div>
+    </div>
+    <script src="js/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+
+
+        $('#weather-btn').on('click', function (event) {
+          // cancel default action (form submission)
+          event.preventDefault();
+
+          var city = $('input[name="city"]').val();
+
+          // ajax post request to weather.php
+          $.ajax({
+            dataType: 'JSON',
+            type: 'POST',
+            url: 'weather.php',
+            data: {
+              city: city
+            },
+            statusCode: {
+              404: function () {
+                $('.error-box').html('404 error.');
+              }
+            },
+            success: function (data) {
+             
+              $('#weather-data').html(data.weatherData);
+              $('.error-box').text(data.errorMessage);
+            },
+            fail: function (data) {
+              $('.error-box').html(data.errorMessage);
+            }
+          });
+
+        });
+
+
+      });
+    </script>
+</body>
+
+</html>
